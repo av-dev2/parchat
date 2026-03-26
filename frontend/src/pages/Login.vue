@@ -7,11 +7,11 @@
       <form @submit.prevent="doLogin">
         <div class="form-group">
           <label>Username or Email</label>
-          <input class="form-input" v-model="loginId" placeholder="Your display name or email" required />
+          <input class="form-input" v-model="loginId" placeholder="Username or Email" required />
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input class="form-input" type="password" v-model="password" placeholder="Your password" required />
+          <input class="form-input" type="password" v-model="password" placeholder="Password" required />
         </div>
         <button class="btn btn-primary btn-block" :disabled="loading" type="submit">
           {{ loading ? 'Logging in...' : 'Log In' }}

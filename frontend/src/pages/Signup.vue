@@ -11,12 +11,12 @@
       </div>
       <form @submit.prevent="doSignup">
         <div class="form-group">
-          <label>Display Name</label>
-          <input class="form-input" v-model="displayName" placeholder="Choose a display name" required />
+          <label>Username</label>
+          <input class="form-input" v-model="displayName" placeholder="Username" required />
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input class="form-input" type="password" v-model="password" placeholder="Create a password" required />
+          <input class="form-input" type="password" v-model="password" placeholder="Password" required />
         </div>
         <button class="btn btn-primary btn-block" :disabled="loading" type="submit">
           {{ loading ? 'Creating account...' : 'Sign Up' }}

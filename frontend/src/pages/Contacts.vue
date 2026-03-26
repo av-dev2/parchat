@@ -10,9 +10,9 @@
         <p>No contacts yet. Add one using their UUID!</p>
       </div>
       <div v-for="c in chatStore.contacts" :key="c.name" class="chat-item">
-        <div class="avatar">{{ c.display_name?.charAt(0)?.toUpperCase() || '?' }}</div>
+        <div class="avatar">{{ c.username?.charAt(0)?.toUpperCase() || '?' }}</div>
         <div class="chat-item-info">
-          <div class="chat-item-name">{{ c.display_name }}</div>
+          <div class="chat-item-name">{{ c.username }}</div>
           <div class="chat-item-preview">{{ c.contact_uuid }}</div>
         </div>
       </div>

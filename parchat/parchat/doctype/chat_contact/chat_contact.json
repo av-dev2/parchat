@@ -8,7 +8,7 @@
   "owner_profile",
   "contact_profile",
   "contact_uuid",
-  "display_name",
+  "username",
   "added_on"
  ],
  "fields": [
@@ -35,10 +35,10 @@
    "read_only": 1
   },
   {
-   "fieldname": "display_name",
+   "fieldname": "username",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Display Name",
+   "label": "Username",
    "reqd": 1
   },
   {

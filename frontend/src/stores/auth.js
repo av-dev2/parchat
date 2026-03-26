@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function signup(displayName, password) {
-    const result = await call('signup', { display_name: displayName, password })
+    const result = await call('signup', { username: displayName, password })
     await checkSession()
     return result
   }

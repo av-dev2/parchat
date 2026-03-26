@@ -11,10 +11,10 @@ def get_current_profile_name():
 
 
 @frappe.whitelist(allow_guest=True)
-def signup(display_name, password):
+def signup(username, password):
 	"""Anonymous signup: generate random email, create User + Chat Profile."""
-	if not display_name or not password:
-		frappe.throw(_("Display name and password are required"))
+	if not username or not password:
+		frappe.throw(_("Username and password are required"))
 
 	random_id = frappe.generate_hash(length=8)
 	email = f"usr_{random_id}@parchat.local"
@@ -22,7 +22,7 @@ def signup(display_name, password):
 	user = frappe.get_doc({
 		"doctype": "User",
 		"email": email,
-		"first_name": display_name,
+		"first_name": username,
 		"new_password": password,
 		"send_welcome_email": 0,
 		"user_type": "Website User",
@@ -36,7 +36,7 @@ def signup(display_name, password):
 		"doctype": "Chat Profile",
 		"user": user.name,
 		"uuid": profile_uuid,
-		"display_name": display_name,
+		"username": username,
 	})
 	profile.flags.ignore_permissions = True
 	profile.insert()
@@ -53,13 +53,13 @@ def signup(display_name, password):
 		"success": True,
 		"uuid": profile.uuid,
 		"email": email,
-		"display_name": display_name,
+		"username": username,
 	}
 
 
 @frappe.whitelist(allow_guest=True)
 def login(login_id, password):
-	"""Login via display name, email, or username."""
+	"""Login via username or email."""
 	from frappe.auth import LoginManager
 
 	email = login_id
@@ -68,8 +68,8 @@ def login(login_id, password):
 		# Direct email login
 		pass
 	else:
-		# Try to resolve as a Chat Profile display_name first
-		user = frappe.db.get_value("Chat Profile", {"display_name": login_id}, "user")
+		# Try to resolve as a Chat Profile username first
+		user = frappe.db.get_value("Chat Profile", {"username": login_id}, "user")
 		if user:
 			email = user
 		elif frappe.db.exists("User", login_id):
@@ -113,22 +113,22 @@ def get_profile():
 	return {
 		"name": profile.name,
 		"uuid": profile.uuid,
-		"display_name": profile.display_name,
+		"username": profile.username,
 		"bio": profile.bio,
 		"avatar_url": profile.avatar_url,
 	}
 
 
 @frappe.whitelist()
-def update_profile(display_name=None, bio=None, avatar_url=None):
+def update_profile(username=None, bio=None, avatar_url=None):
 	"""Update the current user's profile fields."""
 	profile_name = get_current_profile_name()
 	if not profile_name:
 		frappe.throw(_("Profile not found"))
 
 	profile = frappe.get_doc("Chat Profile", profile_name)
-	if display_name:
-		profile.display_name = display_name
+	if username:
+		profile.username = username
 	if bio is not None:
 		profile.bio = bio
 	if avatar_url is not None:
@@ -166,7 +166,7 @@ def add_contact(contact_uuid, alias_name=None):
 		"owner_profile": owner_name,
 		"contact_profile": contact_profile_name,
 		"contact_uuid": contact_profile.uuid,
-		"display_name": alias_name or contact_profile.display_name,
+		"username": alias_name or contact_profile.username,
 		"added_on": now_datetime(),
 	})
 	contact.insert(ignore_permissions=True)
@@ -198,8 +198,8 @@ def get_contacts():
 	contacts = frappe.get_all(
 		"Chat Contact",
 		filters={"owner_profile": owner_name},
-		fields=["name", "contact_profile", "contact_uuid", "display_name", "added_on"],
-		order_by="display_name asc",
+		fields=["name", "contact_profile", "contact_uuid", "username", "added_on"],
+		order_by="username asc",
 	)
 	return contacts
 
@@ -216,7 +216,7 @@ def get_rooms():
 		SELECT
 			r.name, r.room_id, r.participant_1, r.participant_2,
 			r.last_message, r.last_message_at,
-			p1.display_name as p1_name, p2.display_name as p2_name,
+			p1.username as p1_name, p2.username as p2_name,
 			p1.avatar_url as p1_avatar, p2.avatar_url as p2_avatar,
 			p1.is_online as p1_online, p2.is_online as p2_online,
 			p1.uuid as p1_uuid, p2.uuid as p2_uuid

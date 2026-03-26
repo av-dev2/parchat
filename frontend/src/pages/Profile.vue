@@ -17,7 +17,7 @@
       <div v-if="success" class="success-message">{{ success }}</div>
       <form @submit.prevent="saveProfile">
         <div class="form-group">
-          <label>Display Name</label>
+          <label>Username</label>
           <input class="form-input" v-model="displayName" />
         </div>
         <div class="form-group">
@@ -50,7 +50,7 @@ const saving = ref(false)
 const copied = ref(false)
 
 onMounted(() => {
-  displayName.value = auth.user?.display_name || ''
+  displayName.value = auth.user?.username || ''
   bio.value = auth.user?.bio || ''
 })
 
@@ -74,7 +74,7 @@ async function saveProfile() {
   success.value = ''
   saving.value = true
   try {
-    await auth.updateProfile({ display_name: displayName.value, bio: bio.value })
+    await auth.updateProfile({ username: displayName.value, bio: bio.value })
     success.value = 'Profile updated!'
     setTimeout(() => (success.value = ''), 2000)
   } catch (e) {

@@ -7,7 +7,7 @@
  "field_order": [
   "user",
   "uuid",
-  "display_name",
+  "username",
   "bio",
   "avatar_url",
   "last_seen",
@@ -33,10 +33,10 @@
    "unique": 1
   },
   {
-   "fieldname": "display_name",
+   "fieldname": "username",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Display Name",
+   "label": "Username",
    "reqd": 1
   },
   {
