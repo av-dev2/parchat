@@ -29,8 +29,14 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function login(loginId, password) {
-    await call('login', { login_id: loginId, password })
-    await checkSession()
+    const result = await call('login', { login_id: loginId, password })
+    // Try to load profile — will fail for non-parchat users, that's OK
+    try {
+      await checkSession()
+    } catch {
+      // Non-parchat user, user stays null
+    }
+    return result
   }
 
   async function logout() {

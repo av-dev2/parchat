@@ -6,8 +6,8 @@
       <div v-if="error" class="error-message">{{ error }}</div>
       <form @submit.prevent="doLogin">
         <div class="form-group">
-          <label>UUID or Email</label>
-          <input class="form-input" v-model="loginId" placeholder="Your UUID or generated email" required />
+          <label>Username or Email</label>
+          <input class="form-input" v-model="loginId" placeholder="Your display name or email" required />
         </div>
         <div class="form-group">
           <label>Password</label>
@@ -41,8 +41,14 @@ async function doLogin() {
   error.value = ''
   loading.value = true
   try {
-    await auth.login(loginId.value, password.value)
-    router.push('/chats')
+    const result = await auth.login(loginId.value, password.value)
+
+    // Parchat users go to chats, others go to desk
+    if (result && result.is_parchat_user) {
+      router.push('/chats')
+    } else {
+      window.location.href = '/app'
+    }
   } catch (e) {
     error.value = e.messages?.[0] || e.message || 'Login failed'
   }

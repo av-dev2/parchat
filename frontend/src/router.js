@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 const routes = [
   {
     path: '/',
-    redirect: '/chats',
+    redirect: '/login',
   },
   {
     path: '/signup',
@@ -44,16 +44,25 @@ let router = createRouter({
   routes,
 })
 
+const publicPages = ['Signup', 'Login']
+const protectedPages = ['Chats', 'ChatRoom', 'Contacts', 'Profile']
+
 router.beforeEach(async (to, from, next) => {
-  const publicPages = ['Signup', 'Login']
   const auth = useAuthStore()
 
-  if (!auth.isLoggedIn && !publicPages.includes(to.name)) {
+  // If navigating to a protected page and not logged in, check session first
+  if (!auth.isLoggedIn && protectedPages.includes(to.name)) {
     await auth.checkSession()
     if (!auth.isLoggedIn) {
-      return next({ name: 'Signup' })
+      return next({ name: 'Login' })
     }
   }
+
+  // If logged in and trying to visit login/signup, redirect to chats
+  if (auth.isLoggedIn && publicPages.includes(to.name)) {
+    return next({ name: 'Chats' })
+  }
+
   next()
 })
 
