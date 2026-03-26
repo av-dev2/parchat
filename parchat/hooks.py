@@ -59,12 +59,20 @@ website_route_rules = [
 # ----------
 
 # application home page (will override Website Settings)
-# home_page = "login"
+home_page = "parchat/login"
 
 # website user home page (by Role)
 # role_home_page = {
 # 	"Role": "home_page"
 # }
+
+# Override Frappe's login page to redirect to Parchat frontend login
+website_redirects = [
+	{"source": "/login", "target": "/parchat/login"},
+]
+
+# After login, redirect based on user type
+on_login = "parchat.utils.redirect_after_login"
 
 # Generators
 # ----------

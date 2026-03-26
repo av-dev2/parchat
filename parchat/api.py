@@ -59,25 +59,40 @@ def signup(display_name, password):
 
 @frappe.whitelist(allow_guest=True)
 def login(login_id, password):
-	"""Login via UUID or generated email."""
+	"""Login via display name, email, or username."""
 	from frappe.auth import LoginManager
 
 	email = login_id
-	# If login_id looks like a UUID, resolve it to email
-	if "@" not in login_id:
-		user = frappe.db.get_value("Chat Profile", {"uuid": login_id}, "user")
+
+	if "@" in login_id:
+		# Direct email login
+		pass
+	else:
+		# Try to resolve as a Chat Profile display_name first
+		user = frappe.db.get_value("Chat Profile", {"display_name": login_id}, "user")
 		if user:
 			email = user
+		elif frappe.db.exists("User", login_id):
+			# Direct Frappe username (e.g. "Administrator")
+			email = login_id
 		else:
-			frappe.throw(_("Invalid UUID"), frappe.AuthenticationError)
+			frappe.throw(_("User not found"), frappe.AuthenticationError)
 
 	try:
 		login_manager = LoginManager()
 		login_manager.authenticate(email, password)
 		login_manager.post_login()
-		return {"success": True}
+
+		# Check if this user has a Chat Profile
+		has_profile = frappe.db.exists("Chat Profile", {"user": email})
+
+		return {
+			"success": True,
+			"is_parchat_user": bool(has_profile),
+		}
 	except frappe.AuthenticationError:
 		frappe.throw(_("Invalid credentials"), frappe.AuthenticationError)
+
 
 
 @frappe.whitelist()
