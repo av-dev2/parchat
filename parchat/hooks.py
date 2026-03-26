@@ -10,16 +10,18 @@ app_license = "mit"
 
 # required_apps = []
 
-# Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "parchat",
-# 		"logo": "/assets/parchat/logo.png",
-# 		"title": "Parchat",
-# 		"route": "/parchat",
-# 		"has_permission": "parchat.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "parchat",
+		"logo": "/assets/parchat/logo.png",
+		"title": "Parchat",
+		"route": "/parchat",
+	}
+]
+
+website_route_rules = [
+	{"from_route": "/parchat/<path:app_path>", "to_route": "parchat"},
+]
 
 # Includes in <head>
 # ------------------
